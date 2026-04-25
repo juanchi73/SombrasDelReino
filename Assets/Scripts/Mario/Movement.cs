@@ -201,6 +201,11 @@ public class MarioMovement : MonoBehaviour
         }
     }
 
+    public void MorirPorPeligro()
+    {
+        Die();
+    }
+
     private void DisableHitboxes()
     {
         foreach (Collider2D collider in colliders)
