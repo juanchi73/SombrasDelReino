@@ -11,15 +11,16 @@ public class EnemigoVolador : MonoBehaviour
     [SerializeField] private float horizontalSpeed = 2f;
     [SerializeField] private bool direccionInicialAleatoria = true;
     [SerializeField] private bool startFacingRight = true;
+    [SerializeField] private float tiempoCambioDireccion = 2f;
 
     [Header("Movimiento Vertical")]
     [SerializeField] private float verticalAmplitude = 0.8f;
     [SerializeField] private float verticalCycleDuration = 1.6f;
 
-    [Header("Golpe Desde Abajo")]
-    [SerializeField] private float minUpwardHitSpeed = 0.1f;
-    [SerializeField] private float bottomHitContactHeight = 0.1f;
-    [SerializeField] private float bottomHitNormalThreshold = 0.3f;
+    [Header("Stomp")]
+    [SerializeField] private float stompBounce = 12f;
+    [SerializeField] private float stompNormalThreshold = 0.5f;
+    [SerializeField] private float stompContactHeight = 0.1f;
 
     [Header("Muerte")]
     [SerializeField] private Sprite deathSprite;
@@ -32,6 +33,7 @@ public class EnemigoVolador : MonoBehaviour
     private Vector2 startPosition;
     private int direction = 1;
     private float elapsed;
+    private float directionChangeTimer;
     private bool isDead;
 
     private void Awake()
@@ -63,6 +65,14 @@ public class EnemigoVolador : MonoBehaviour
         }
 
         elapsed += Time.fixedDeltaTime;
+        directionChangeTimer += Time.fixedDeltaTime;
+
+        if (tiempoCambioDireccion > 0f && directionChangeTimer >= tiempoCambioDireccion)
+        {
+            direction *= -1;
+            directionChangeTimer = 0f;
+            ActualizarOrientacionVisual();
+        }
 
         float cycleDuration = Mathf.Max(0.01f, verticalCycleDuration);
         float phase = elapsed / cycleDuration * Mathf.PI * 2f;
@@ -84,9 +94,9 @@ public class EnemigoVolador : MonoBehaviour
 
         if (!string.IsNullOrEmpty(playerTag) && collision.collider.CompareTag(playerTag))
         {
-            if (FueGolpeadoDesdeAbajo(collision))
+            if (FuePisadoPorMario(collision))
             {
-                Morir();
+                MorirPisado(collision.collider);
             }
             else
             {
@@ -110,26 +120,20 @@ public class EnemigoVolador : MonoBehaviour
             if (Mathf.Abs(contact.normal.x) > 0.5f)
             {
                 direction *= -1;
+                directionChangeTimer = 0f;
                 ActualizarOrientacionVisual();
                 return;
             }
         }
     }
 
-    private bool FueGolpeadoDesdeAbajo(Collision2D collision)
+    private bool FuePisadoPorMario(Collision2D collision)
     {
-        Rigidbody2D playerRb = collision.collider.attachedRigidbody;
-        if (playerRb == null || playerRb.linearVelocity.y <= minUpwardHitSpeed)
-        {
-            return false;
-        }
-
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            bool contactoAbajo = contact.point.y < transform.position.y - bottomHitContactHeight;
-            bool normalHaciaAbajo = contact.normal.y < -bottomHitNormalThreshold;
-
-            if (contactoAbajo || normalHaciaAbajo)
+            bool contactoVertical = Mathf.Abs(contact.normal.y) > stompNormalThreshold;
+            bool contactoArriba = contact.point.y > transform.position.y + stompContactHeight;
+            if (contactoVertical && contactoArriba)
             {
                 return true;
             }
@@ -138,7 +142,7 @@ public class EnemigoVolador : MonoBehaviour
         return false;
     }
 
-    private void Morir()
+    private void MorirPisado(Collider2D player)
     {
         if (isDead)
         {
@@ -146,6 +150,7 @@ public class EnemigoVolador : MonoBehaviour
         }
 
         isDead = true;
+        RebotarMario(player);
 
         if (deathSprite != null && spriteRenderer != null)
         {
@@ -156,6 +161,15 @@ public class EnemigoVolador : MonoBehaviour
         rb.gravityScale = deathGravityScale;
         rb.linearVelocity = new Vector2(0f, deathBounce);
         StartCoroutine(EsperarYDestruir());
+    }
+
+    private void RebotarMario(Collider2D player)
+    {
+        Rigidbody2D playerRb = player.attachedRigidbody;
+        if (playerRb != null)
+        {
+            playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, stompBounce);
+        }
     }
 
     private void DesactivarHitboxes()
