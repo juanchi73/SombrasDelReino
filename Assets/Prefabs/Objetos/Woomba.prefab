@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 904292885573502599}
   - component: {fileID: 4754219371884908292}
   - component: {fileID: 293300484936436871}
+  - component: {fileID: -1521616994249617168}
   m_Layer: 0
   m_Name: Woomba
   m_TagString: Enemigos
@@ -84,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3713997793711698841, guid: a9b49a6534680b74883d98c690bbd19d, type: 3}
+  m_Sprite: {fileID: 4525616069108085985, guid: a770be1ddc116a740864e39bc2f6ed5f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,17 +156,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.07649422, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.03125, y: 1.03125}
+    oldSize: {x: 1.25, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.1325893, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &293300484936436871
 MonoBehaviour:
@@ -188,3 +189,25 @@ MonoBehaviour:
   deathSprite: {fileID: 595930661, guid: 453140e5cecda3148a963d31af2b14c9, type: 3}
   deathBounce: 2
   deathDestroyDelay: 1.5
+--- !u!95 &-1521616994249617168
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506198985165209221}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 705500b73b69d9940badcc03485abcd5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

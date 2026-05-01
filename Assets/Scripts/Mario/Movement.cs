@@ -5,6 +5,11 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class MarioMovement : MonoBehaviour
 {
+    private const string AnimatorSpeedX = "SpeedX";
+    private const string AnimatorIsGrounded = "IsGrounded";
+    private const string AnimatorIsJumping = "IsJumping";
+    private const string AnimatorFacingRight = "FacingRight";
+
     [Header("Configuracion de Movimiento")]
     public float maxSpeed = 8f;
     public float acceleration = 90f;
@@ -37,6 +42,7 @@ public class MarioMovement : MonoBehaviour
     [HideInInspector] [SerializeField] private float remainingTime;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
     private Collider2D[] colliders;
     private float horizontalInput;
@@ -44,6 +50,7 @@ public class MarioMovement : MonoBehaviour
     private bool jumpHeld;
     private bool jumpRequest;
     private bool isDead;
+    private bool facingRight = true;
     private Vector3 spawnPosition;
     private float originalGravityScale;
     private Sprite initialSprite;
@@ -52,6 +59,7 @@ public class MarioMovement : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         colliders = GetComponentsInChildren<Collider2D>(true);
         rb.freezeRotation = true;
@@ -89,6 +97,8 @@ public class MarioMovement : MonoBehaviour
         {
             jumpRequest = true;
         }
+
+        UpdateFacingDirection();
     }
 
     void FixedUpdate()
@@ -99,6 +109,8 @@ public class MarioMovement : MonoBehaviour
         ApplyMovement();
         ApplyJump();
         ApplyGravityMultipliers();
+        CheckGround();
+        UpdateAnimator();
     }
 
     private void CheckGround()
@@ -143,6 +155,30 @@ public class MarioMovement : MonoBehaviour
         jumpRequest = false;
     }
 
+    private void UpdateFacingDirection()
+    {
+        if (horizontalInput > 0.01f)
+        {
+            facingRight = true;
+        }
+        else if (horizontalInput < -0.01f)
+        {
+            facingRight = false;
+        }
+    }
+
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        bool isJumping = !isGrounded;
+
+        animator.SetFloat(AnimatorSpeedX, Mathf.Abs(rb.linearVelocity.x));
+        animator.SetBool(AnimatorIsGrounded, isGrounded);
+        animator.SetBool(AnimatorIsJumping, isJumping);
+        animator.SetBool(AnimatorFacingRight, facingRight);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isDead) return;
@@ -183,6 +219,11 @@ public class MarioMovement : MonoBehaviour
 
         if (deathSprite != null && spriteRenderer != null)
         {
+            if (animator != null)
+            {
+                animator.enabled = false;
+            }
+
             spriteRenderer.sprite = deathSprite;
         }
 
@@ -246,6 +287,7 @@ public class MarioMovement : MonoBehaviour
         jumpHeld = false;
         jumpRequest = false;
         isDead = false;
+        facingRight = true;
 
         if (spriteRenderer != null)
         {
@@ -255,7 +297,13 @@ public class MarioMovement : MonoBehaviour
             spriteRenderer.color = color;
         }
 
+        if (animator != null)
+        {
+            animator.enabled = true;
+        }
+
         EnableHitboxes();
+        UpdateAnimator();
     }
 
     public float ObtenerTiempoRestante()
