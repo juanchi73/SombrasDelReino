@@ -51,6 +51,7 @@ public class MarioMovement : MonoBehaviour
     private bool jumpHeld;
     private bool jumpRequest;
     private bool isDead;
+    private bool movementLocked;
     private bool facingRight = true;
     private Vector3 spawnPosition;
     private float originalGravityScale;
@@ -81,7 +82,7 @@ public class MarioMovement : MonoBehaviour
 
     void Update()
     {
-        if (!isDead)
+        if (!isDead && !movementLocked)
         {
             remainingTime -= Time.deltaTime;
             if (remainingTime <= 0f)
@@ -89,6 +90,16 @@ public class MarioMovement : MonoBehaviour
                 remainingTime = 0f;
                 Die();
             }
+        }
+
+        if (movementLocked)
+        {
+            horizontalInput = 0f;
+            jumpHeld = false;
+            jumpRequest = false;
+            UpdateFacingDirection();
+            UpdateAnimator();
+            return;
         }
 
         horizontalInput = ReadHorizontalInput();
@@ -105,7 +116,7 @@ public class MarioMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isDead) return;
+        if (isDead || movementLocked) return;
 
         CheckGround();
         ApplyMovement();
@@ -263,6 +274,27 @@ public class MarioMovement : MonoBehaviour
         Die();
     }
 
+    public void BloquearMovimiento()
+    {
+        movementLocked = true;
+        horizontalInput = 0f;
+        jumpHeld = false;
+        jumpRequest = false;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        UpdateAnimator();
+    }
+
+    public void DesbloquearMovimiento()
+    {
+        movementLocked = false;
+    }
+
     public void EstablecerCheckpoint(Vector3 nuevaPosicion)
     {
         spawnPosition = nuevaPosicion;
@@ -313,6 +345,7 @@ public class MarioMovement : MonoBehaviour
         jumpHeld = false;
         jumpRequest = false;
         isDead = false;
+        movementLocked = false;
         facingRight = true;
 
         if (spriteRenderer != null)
