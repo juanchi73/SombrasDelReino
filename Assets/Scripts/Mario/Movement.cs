@@ -9,6 +9,7 @@ public class MarioMovement : MonoBehaviour
     private const string AnimatorIsGrounded = "IsGrounded";
     private const string AnimatorIsJumping = "IsJumping";
     private const string AnimatorFacingRight = "FacingRight";
+    private const string AnimatorMoveInputX = "MoveInputX";
 
     [Header("Configuracion de Movimiento")]
     public float maxSpeed = 8f;
@@ -55,6 +56,8 @@ public class MarioMovement : MonoBehaviour
     private float originalGravityScale;
     private Sprite initialSprite;
     private Coroutine respawnCoroutine;
+    private bool hasFacingRightParameter;
+    private bool hasMoveInputXParameter;
 
     void Awake()
     {
@@ -72,6 +75,8 @@ public class MarioMovement : MonoBehaviour
         {
             initialSprite = spriteRenderer.sprite;
         }
+
+        CacheAnimatorParameters();
     }
 
     void Update()
@@ -86,19 +91,16 @@ public class MarioMovement : MonoBehaviour
             }
         }
 
-        float move = 0f;
-        if (Keyboard.current.dKey.isPressed) move = 1f;
-        else if (Keyboard.current.aKey.isPressed) move = -1f;
-        horizontalInput = move;
+        horizontalInput = ReadHorizontalInput();
+        jumpHeld = IsJumpPressed();
 
-        jumpHeld = Keyboard.current.wKey.isPressed;
-
-        if (Keyboard.current.wKey.wasPressedThisFrame)
+        if (WasJumpPressedThisFrame())
         {
             jumpRequest = true;
         }
 
         UpdateFacingDirection();
+        UpdateAnimator();
     }
 
     void FixedUpdate()
@@ -165,6 +167,11 @@ public class MarioMovement : MonoBehaviour
         {
             facingRight = false;
         }
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = !facingRight;
+        }
     }
 
     private void UpdateAnimator()
@@ -173,10 +180,19 @@ public class MarioMovement : MonoBehaviour
 
         bool isJumping = !isGrounded;
 
-        animator.SetFloat(AnimatorSpeedX, Mathf.Abs(rb.linearVelocity.x));
+        animator.SetFloat(AnimatorSpeedX, Mathf.Abs(horizontalInput));
         animator.SetBool(AnimatorIsGrounded, isGrounded);
         animator.SetBool(AnimatorIsJumping, isJumping);
-        animator.SetBool(AnimatorFacingRight, facingRight);
+
+        if (hasFacingRightParameter)
+        {
+            animator.SetBool(AnimatorFacingRight, facingRight);
+        }
+
+        if (hasMoveInputXParameter)
+        {
+            animator.SetFloat(AnimatorMoveInputX, horizontalInput);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -247,6 +263,16 @@ public class MarioMovement : MonoBehaviour
         Die();
     }
 
+    public void EstablecerCheckpoint(Vector3 nuevaPosicion)
+    {
+        spawnPosition = nuevaPosicion;
+    }
+
+    public Vector3 ObtenerCheckpointActual()
+    {
+        return spawnPosition;
+    }
+
     private void DisableHitboxes()
     {
         foreach (Collider2D collider in colliders)
@@ -303,7 +329,63 @@ public class MarioMovement : MonoBehaviour
         }
 
         EnableHitboxes();
+        UpdateFacingDirection();
         UpdateAnimator();
+    }
+
+    private float ReadHorizontalInput()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return 0f;
+
+        float move = 0f;
+
+        if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed)
+        {
+            move -= 1f;
+        }
+
+        if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed)
+        {
+            move += 1f;
+        }
+
+        return Mathf.Clamp(move, -1f, 1f);
+    }
+
+    private bool IsJumpPressed()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return false;
+
+        return keyboard.wKey.isPressed || keyboard.spaceKey.isPressed || keyboard.upArrowKey.isPressed;
+    }
+
+    private bool WasJumpPressedThisFrame()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return false;
+
+        return keyboard.wKey.wasPressedThisFrame
+            || keyboard.spaceKey.wasPressedThisFrame
+            || keyboard.upArrowKey.wasPressedThisFrame;
+    }
+
+    private void CacheAnimatorParameters()
+    {
+        if (animator == null) return;
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.name == AnimatorFacingRight)
+            {
+                hasFacingRightParameter = true;
+            }
+            else if (parameter.name == AnimatorMoveInputX)
+            {
+                hasMoveInputXParameter = true;
+            }
+        }
     }
 
     public float ObtenerTiempoRestante()

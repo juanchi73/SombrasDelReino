@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3097262696122877509}
   - component: {fileID: 8422992430655202905}
   - component: {fileID: 7533737203572428392}
+  - component: {fileID: -2236726473679307051}
   m_Layer: 0
   m_Name: Murcielago
   m_TagString: Enemigos
@@ -96,17 +97,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0014662743, y: 0.00013673306}
+  m_Offset: {x: 0.0053343773, y: -0.003730774}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.65625, y: 0.96875}
+    oldSize: {x: 1.7777778, y: 0.6666667}
     newSize: {x: 0.65625, y: 0.96875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.6685972, y: 0.9768112}
+  m_Size: {x: 0.7846403, y: 0.6596222}
   m_EdgeRadius: 0
 --- !u!212 &8422992430655202905
 SpriteRenderer:
@@ -155,9 +156,9 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4008832254794349035, guid: a9b49a6534680b74883d98c690bbd19d, type: 3}
+  m_Sprite: {fileID: 6632607093454656935, guid: f449dbfd9d1f13148806296a65ec377c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -186,10 +187,32 @@ MonoBehaviour:
   tiempoCambioDireccion: 2.5
   verticalAmplitude: 0.8
   verticalCycleDuration: 1.6
-  minUpwardHitSpeed: 0.1
-  bottomHitContactHeight: 0.1
-  bottomHitNormalThreshold: 0.3
+  stompBounce: 12
+  stompNormalThreshold: 0.5
+  stompContactHeight: 0.1
   deathSprite: {fileID: 1247043638549405190, guid: 06f794e785b656240affd05d23d6c3d5, type: 3}
   deathBounce: 8
   deathDestroyDelay: 2
   deathGravityScale: 1
+--- !u!95 &-2236726473679307051
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6327313376009698529}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cb56b6a3e00640d45b9267efe5f1247c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
