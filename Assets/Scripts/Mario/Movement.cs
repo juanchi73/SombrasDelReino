@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MarioMovement : MonoBehaviour
@@ -36,6 +37,8 @@ public class MarioMovement : MonoBehaviour
     public float respawnDelay = 2f;
     [Tooltip("Salto que hace Mario al morir")]
     public float deathBounce = 4f;
+    [Header("Escena de Derrota")]
+    [SerializeField] private string loseSceneName = "LOSE";
 
     [Header("Temporizador")]
     [Tooltip("Tiempo total en segundos antes de que Mario muera automaticamente")]
@@ -267,6 +270,10 @@ public class MarioMovement : MonoBehaviour
         {
             respawnCoroutine = StartCoroutine(RespawnAfterDelay());
         }
+        else if (!string.IsNullOrWhiteSpace(loseSceneName))
+        {
+            respawnCoroutine = StartCoroutine(LoadLoseSceneAfterDelay());
+        }
     }
 
     public void MorirPorPeligro()
@@ -331,6 +338,13 @@ public class MarioMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(respawnDelay);
         Respawn();
+        respawnCoroutine = null;
+    }
+
+    private IEnumerator LoadLoseSceneAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+        SceneManager.LoadScene(loseSceneName);
         respawnCoroutine = null;
     }
 

@@ -84,8 +84,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2432824286283717779, guid: 6e2d033c63af76f49b93816312fb2b18, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 352713682, guid: 198c5cf9dad20144995fd44cf395c218, type: 3}
+  m_Color: {r: 0.7058824, g: 0.7058824, b: 0.7058824, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -128,17 +128,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.003522873, y: 0.063426256}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.9923077, y: 1.0692308}
+    oldSize: {x: 2, y: 2}
     newSize: {x: 1.9923077, y: 1.0692308}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.9923077, y: 1.0692308}
+  m_Size: {x: 1.3791924, y: 2.0558615}
   m_EdgeRadius: 0
 --- !u!114 &4460086943492665574
 MonoBehaviour:
@@ -155,7 +155,7 @@ MonoBehaviour:
   playerTag: Player
   respawnPoint: {fileID: 4477364874454804291}
   spriteRenderer: {fileID: 1175812703211375775}
-  inactiveSprite: {fileID: 2432824286283717779, guid: 6e2d033c63af76f49b93816312fb2b18, type: 3}
+  inactiveSprite: {fileID: 352713682, guid: 198c5cf9dad20144995fd44cf395c218, type: 3}
   activeSprite: {fileID: -7185272857355275315, guid: 718c3c0d5783a4041914f144f0f3fdcf, type: 3}
 --- !u!1 &2558838773577847074
 GameObject:
