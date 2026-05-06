@@ -29,6 +29,7 @@ public class EnemigoVolador : MonoBehaviour
     [SerializeField] private float deathGravityScale = 1f;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
     private Vector2 startPosition;
     private int direction = 1;
@@ -39,6 +40,7 @@ public class EnemigoVolador : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startPosition = rb.position;
 
@@ -151,6 +153,11 @@ public class EnemigoVolador : MonoBehaviour
 
         isDead = true;
         RebotarMario(player);
+
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
 
         if (deathSprite != null && spriteRenderer != null)
         {

@@ -190,7 +190,7 @@ MonoBehaviour:
   stompBounce: 12
   stompNormalThreshold: 0.5
   stompContactHeight: 0.1
-  deathSprite: {fileID: 1247043638549405190, guid: 06f794e785b656240affd05d23d6c3d5, type: 3}
+  deathSprite: {fileID: -688097713007564978, guid: f449dbfd9d1f13148806296a65ec377c, type: 3}
   deathBounce: 8
   deathDestroyDelay: 2
   deathGravityScale: 1

@@ -3,7 +3,7 @@ using TMPro;
 
 public class ContadorMonedas : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textoMonedas;
+    [SerializeField] private TMP_Text textoMonedas;
     private int monedasTotales = 0;
 
     // Singleton
@@ -18,6 +18,12 @@ public class ContadorMonedas : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
+        }
+
+        if (textoMonedas == null)
+        {
+            textoMonedas = GetComponentInChildren<TMP_Text>(true);
         }
     }
 
@@ -25,7 +31,7 @@ public class ContadorMonedas : MonoBehaviour
     {
         if (textoMonedas == null)
         {
-            Debug.LogWarning("ContadorMonedas: No hay TextMeshProUGUI asignado en el Inspector");
+            Debug.LogWarning("ContadorMonedas: No hay ningun TMP_Text asignado ni encontrado en hijos.");
         }
         ActualizarInterfaz();
     }

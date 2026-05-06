@@ -30,6 +30,7 @@ public class Woomba : MonoBehaviour
     public float deathDestroyDelay = 1.5f;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
     private int direction = -1;
     private bool isDead = false;
@@ -37,6 +38,7 @@ public class Woomba : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb.freezeRotation = true;
 
@@ -107,6 +109,11 @@ public class Woomba : MonoBehaviour
 
     private void StartDeathSequence()
     {
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+
         if (deathSprite != null && spriteRenderer != null)
         {
             spriteRenderer.sprite = deathSprite;

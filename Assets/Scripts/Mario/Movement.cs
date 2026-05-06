@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MarioMovement : MonoBehaviour
@@ -38,6 +41,9 @@ public class MarioMovement : MonoBehaviour
     [Tooltip("Salto que hace Mario al morir")]
     public float deathBounce = 4f;
     [Header("Escena de Derrota")]
+#if UNITY_EDITOR
+    [SerializeField] private SceneAsset loseSceneAsset;
+#endif
     [SerializeField] private string loseSceneName = "LOSE";
 
     [Header("Temporizador")]
@@ -62,6 +68,7 @@ public class MarioMovement : MonoBehaviour
     private Coroutine respawnCoroutine;
     private bool hasFacingRightParameter;
     private bool hasMoveInputXParameter;
+    private bool murioPorTiempoAgotado;
 
     void Awake()
     {
@@ -91,6 +98,7 @@ public class MarioMovement : MonoBehaviour
             if (remainingTime <= 0f)
             {
                 remainingTime = 0f;
+                murioPorTiempoAgotado = true;
                 Die();
             }
         }
@@ -266,13 +274,20 @@ public class MarioMovement : MonoBehaviour
             StopCoroutine(respawnCoroutine);
         }
 
-        if (vidasRestantes > 0)
+        if (murioPorTiempoAgotado || vidasRestantes <= 0)
+        {
+            if (!string.IsNullOrWhiteSpace(loseSceneName))
+            {
+                respawnCoroutine = StartCoroutine(LoadLoseSceneAfterDelay());
+            }
+            else
+            {
+                Debug.LogWarning("MarioMovement: No hay escena de derrota configurada.");
+            }
+        }
+        else if (vidasRestantes > 0)
         {
             respawnCoroutine = StartCoroutine(RespawnAfterDelay());
-        }
-        else if (!string.IsNullOrWhiteSpace(loseSceneName))
-        {
-            respawnCoroutine = StartCoroutine(LoadLoseSceneAfterDelay());
         }
     }
 
@@ -354,13 +369,13 @@ public class MarioMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.gravityScale = originalGravityScale;
-        remainingTime = timerDuration;
         horizontalInput = 0f;
         jumpHeld = false;
         jumpRequest = false;
         isDead = false;
         movementLocked = false;
         facingRight = true;
+        murioPorTiempoAgotado = false;
 
         if (spriteRenderer != null)
         {
@@ -440,10 +455,16 @@ public class MarioMovement : MonoBehaviour
         return remainingTime;
     }
 
+    public bool EstaMuerto()
+    {
+        return isDead;
+    }
+
     public void ConfigurarTiempo(float nuevoTiempo)
     {
         timerDuration = Mathf.Max(0f, nuevoTiempo);
         remainingTime = timerDuration;
+        murioPorTiempoAgotado = false;
     }
 
     public void SumarVida(int cantidad = 1)
@@ -473,5 +494,15 @@ public class MarioMovement : MonoBehaviour
             Gizmos.color = isGrounded ? Color.green : Color.red;
             Gizmos.DrawWireSphere(groundCheck.position, groundRadius);
         }
+    }
+
+    private void OnValidate()
+    {
+#if UNITY_EDITOR
+        if (loseSceneAsset != null)
+        {
+            loseSceneName = loseSceneAsset.name;
+        }
+#endif
     }
 }

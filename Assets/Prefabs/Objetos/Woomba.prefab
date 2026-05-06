@@ -83,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4525616069108085985, guid: a770be1ddc116a740864e39bc2f6ed5f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -186,7 +186,7 @@ MonoBehaviour:
   stompBounce: 6.5
   stompNormalThreshold: 0.5
   stompContactHeight: 0.1
-  deathSprite: {fileID: 595930661, guid: 453140e5cecda3148a963d31af2b14c9, type: 3}
+  deathSprite: {fileID: 8802328485762346966, guid: a770be1ddc116a740864e39bc2f6ed5f, type: 3}
   deathBounce: 2
   deathDestroyDelay: 1.5
 --- !u!95 &-1521616994249617168
